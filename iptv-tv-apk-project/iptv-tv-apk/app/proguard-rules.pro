@@ -1,0 +1,2 @@
+-keep class com.iptvpro.player.** { *; }
+-keepattributes *Annotation*
