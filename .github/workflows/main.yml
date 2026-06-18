@@ -15,20 +15,25 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-
-      - name: Listar estrutura do projeto
-        run: find . -maxdepth 5 -name "*.gradle" -o -name "gradlew" | sort
+      - name: Verificar estrutura
+        run: |
+          echo "=== Arquivos na raiz ==="
+          ls -la
+          echo "=== Buscando build.gradle ==="
+          find . -name "build.gradle" 2>/dev/null
+          echo "=== Buscando gradlew ==="
+          find . -name "gradlew" 2>/dev/null
 
       - name: Build APK
         run: |
           cd iptv-tv-apk-project/iptv-tv-apk
+          ls -la
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace --info 2>&1 | tail -100
+          ./gradlew assembleDebug --no-daemon
 
       - uses: actions/upload-artifact@v4
-        if: success()
+        if: always()
         with:
           name: APK-TV
-          path: iptv-tv-apk-project/iptv-tv-apk/app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            iptv-tv-apk-project/iptv-tv-apk/app/build/outputs/apk/debug/*.apk
