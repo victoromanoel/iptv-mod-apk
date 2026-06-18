@@ -15,25 +15,29 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Verificar estrutura
+      - name: Instalar Gradle 8.4
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.4'
+
+      - name: Listar arquivos do projeto
         run: |
-          echo "=== Arquivos na raiz ==="
+          echo "=== Raiz ==="
           ls -la
-          echo "=== Buscando build.gradle ==="
-          find . -name "build.gradle" 2>/dev/null
-          echo "=== Buscando gradlew ==="
-          find . -name "gradlew" 2>/dev/null
+          echo "=== Subpastas ==="
+          find . -name "build.gradle" | sort
 
       - name: Build APK
         run: |
           cd iptv-tv-apk-project/iptv-tv-apk
-          ls -la
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          gradle assembleDebug --no-daemon --stacktrace
+
+      - name: Listar APKs gerados
+        run: find . -name "*.apk" 2>/dev/null || echo "Nenhum APK encontrado"
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: APK-TV
-          path: |
-            iptv-tv-apk-project/iptv-tv-apk/app/build/outputs/apk/debug/*.apk
+          path: "**/*.apk"
+          if-no-files-found: warn
