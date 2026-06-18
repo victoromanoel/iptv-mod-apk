@@ -10,6 +10,10 @@ jobs:
     name: Build APK para Android TV
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: iptv-tv-apk-project/iptv-tv-apk
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -40,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: IPTV-Pro-Player-TV-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: iptv-tv-apk-project/iptv-tv-apk/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
       - name: Info do APK
